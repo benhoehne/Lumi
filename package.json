@@ -61,7 +61,7 @@
   },
   "dependencies": {
     "@lumieducation/h5p-express": "9.3.3",
-    "@lumieducation/h5p-html-exporter": "9.3.3",
+    "@lumieducation/h5p-html-exporter": "^10.0.4",
     "@lumieducation/h5p-server": "9.3.3",
     "bunyan": "1.8.15",
     "electron-log": "^5.3.2",
