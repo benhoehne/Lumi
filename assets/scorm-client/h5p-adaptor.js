@@ -36,10 +36,17 @@ var onCompleted = function (result) {
     masteryScore = scorm.get('cmi.student_data.mastery_score') / 100;
   }
 
-  scorm.set('cmi.core.score.raw', result.score.scaled * 100);
-  scorm.set('cmi.core.score.min', '0');
-  scorm.set('cmi.core.score.max', '100');
-  scorm.set('cmi.core.score.scaled', result.score.scaled * 100);
+  // Set score data using correct SCORM version-specific paths
+  if (scorm.version == '2004') {
+    scorm.set('cmi.score.raw', result.score.scaled * 100);
+    scorm.set('cmi.score.min', '0');
+    scorm.set('cmi.score.max', '100');
+    scorm.set('cmi.score.scaled', result.score.scaled);
+  } else if (scorm.version == '1.2') {
+    scorm.set('cmi.core.score.raw', result.score.scaled * 100);
+    scorm.set('cmi.core.score.min', '0');
+    scorm.set('cmi.core.score.max', '100');
+  }
 
   if (masteryScore === undefined) {
     scorm.status('set', 'completed');
@@ -60,6 +67,9 @@ var onCompleted = function (result) {
       }
     }
   }
+
+  // Save/commit the data to the LMS
+  scorm.save();
 };
 
 // Some H5P content types require this to be set on the platform in order to allow submission of results
