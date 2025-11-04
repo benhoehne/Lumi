@@ -29,9 +29,17 @@ H5PEditor.widgets.imageCoordinateSelector = H5PEditor.ImageCoordinateSelector = 
       this.legacyPositioning = true;
     }
 
+    console.log('ImageCoordinateSelector: Initializing with field.imageFieldPath:', this.field.imageFieldPath);
+    console.log('ImageCoordinateSelector: Parent object:', parent);
+    console.log('ImageCoordinateSelector: Field object:', field);
+
     this.imageField = H5PEditor.findField(this.field.imageFieldPath, this.parent);
 
+    console.log('ImageCoordinateSelector: Found imageField:', this.imageField);
+
     if (this.imageField === undefined) {
+      console.error('ImageCoordinateSelector: Could not find image field at path:', this.field.imageFieldPath);
+      console.error('ImageCoordinateSelector: Available fields in parent:', Object.keys(this.parent));
       throw new Error('I need an image field to do my job');
     }
 
@@ -97,11 +105,50 @@ H5PEditor.widgets.imageCoordinateSelector = H5PEditor.ImageCoordinateSelector = 
         return self.clearImage();
       }
 
-      self.updateImage(params.path);
+      // Handle nested library structure and direct image fields
+      var imagePath = params.path; // Direct image field
+      
+      // Check for library field structure (nested params)
+      if (!imagePath && params.params && params.params.file && params.params.file.path) {
+        imagePath = params.params.file.path; // Library field (H5P.ImageSVG, H5P.Image)
+      }
+      
+      // Fallback for simple library structure
+      if (!imagePath && params.file && params.file.path) {
+        imagePath = params.file.path; // Simple library field
+      }
+      
+      console.log('ImageCoordinateSelector: Processing image with params:', params);
+      console.log('ImageCoordinateSelector: Using image path:', imagePath);
+      
+      if (imagePath) {
+        self.updateImage(imagePath);
+      } else {
+        console.warn('ImageCoordinateSelector: No image path found in params');
+        self.clearImage();
+      }
     });
 
-    if (self.imageField.params && self.imageField.params.path) {
-      self.updateImage(self.imageField.params.path);
+    if (self.imageField.params) {
+      // Handle nested library structure and direct image fields
+      var imagePath = self.imageField.params.path; // Direct image field
+      
+      // Check for library field structure (nested params)
+      if (!imagePath && self.imageField.params.params && self.imageField.params.params.file && self.imageField.params.params.file.path) {
+        imagePath = self.imageField.params.params.file.path; // Library field (H5P.ImageSVG, H5P.Image)
+      }
+      
+      // Fallback for simple library structure
+      if (!imagePath && self.imageField.params.file && self.imageField.params.file.path) {
+        imagePath = self.imageField.params.file.path; // Simple library field
+      }
+      
+      console.log('ImageCoordinateSelector: Initial image params:', self.imageField.params);
+      console.log('ImageCoordinateSelector: Initial image path:', imagePath);
+      
+      if (imagePath) {
+        self.updateImage(imagePath);
+      }
     }
 
     // If params not set, use default values:

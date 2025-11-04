@@ -15,9 +15,18 @@
       "ol",
       "h2",
       "h3",
+      "h4",
       "hr",
       "pre",
-      "code"
+      "sub",
+      "sup",
+      "code",
+      "address",
+      "kbd",
+      "samp",
+      "q",
+      "cite",
+      "mathjax"
     ],
     "font": {
       "size": true,

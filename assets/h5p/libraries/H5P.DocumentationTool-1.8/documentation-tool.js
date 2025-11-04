@@ -61,7 +61,7 @@ H5P.DocumentationTool = (function ($, NavigationMenu, JoubelUI, EventDispatcher)
     // undefined for org users
     if (this.isSubmitButtonEnabled) {
       for (var i = 0; i < this.params.pagesList.length; i++) {
-        if (this.params.pagesList[i].library.split(' ')[0] === 'H5P.DocumentExportPage') {
+        if (this.params.pagesList[i].library?.split(' ')[0] === 'H5P.DocumentExportPage') {
           this.isTask = true;
         }
       }
@@ -216,10 +216,15 @@ H5P.DocumentationTool = (function ($, NavigationMenu, JoubelUI, EventDispatcher)
 
       const childExtras = { parent: self };
       if (this.previousState) {
-        childExtras.previousState = this.previousState.childrenStates[i]
+        childExtras.previousState = this.previousState.childrenStates[i];
+      }
+
+      if (!page.library) {
+        continue;
       }
 
       var singlePage = H5P.newRunnable(page, self.id, undefined, undefined, childExtras);
+
       if (singlePage.libraryInfo.machineName === 'H5P.DocumentExportPage') {
         singlePage.setExportTitle(self.params.taskDescription);
         singlePage.setSumbitEnabled(this.isSubmitButtonEnabled);
@@ -361,6 +366,9 @@ H5P.DocumentationTool = (function ($, NavigationMenu, JoubelUI, EventDispatcher)
 
     // Set focus on the new page after navigating to it
     var pageInstance = self.pageInstances[toPageIndex];
+    if (!pageInstance) {
+      return;
+    }
     if (pageInstance.focus && !skipFocus) {
       if (this.isRoot()) {
         // Trigger focus on text tick
@@ -372,6 +380,9 @@ H5P.DocumentationTool = (function ($, NavigationMenu, JoubelUI, EventDispatcher)
 
     // Trigger xAPI event
     var progressedEvent = self.createXAPIEventTemplate('progressed');
+    if (progressedEvent.data.statement.object.definition.extensions === undefined) {
+      return;
+    }
     progressedEvent.data.statement.object.definition.extensions['http://id.tincanapi.com/extension/ending-point'] = toPageIndex;
     self.trigger(progressedEvent);
 
@@ -408,6 +419,9 @@ H5P.DocumentationTool = (function ($, NavigationMenu, JoubelUI, EventDispatcher)
     var self = this;
     var pageInstance = self.pageInstances[toPageIndex];
 
+    if (!pageInstance) {
+      return;
+    }
     if (pageInstance.libraryInfo.machineName === 'H5P.GoalsAssessmentPage') {
       self.setGoals(self.pageInstances, newGoals);
     }

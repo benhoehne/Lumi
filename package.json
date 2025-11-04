@@ -15,6 +15,7 @@
     "publish:mac": "npx --no-install electron-builder --config builder.config.js --mac --publish always",
     "publish:win": "cp -r assets/appx build && builder-configs\\build.win.bat --publish always && rm -rf build/appx",
     "publish:linux": "npm run build && ./builder-configs/build.linux.sh --publish always",
+    "batch-export": "npm run build && node build/src/cli/batch-export.js",
     "translate:scan": "npx i18next-scanner --config config/i18next-scanner.config.cjs",
     "localize": "json-autotranslate -f -d --directory-structure ngx-translate -c google_translate.json -s google-translate -i assets/translations/lumi  -m i18next && prettier --write \"assets/translations/lumi/*.json\"",
     "translate": "npm run translate:scan && npm run localize",

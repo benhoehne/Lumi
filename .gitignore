@@ -36,3 +36,4 @@ google_translate.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+/assets/h5p/libraries/
